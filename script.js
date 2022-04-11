@@ -1,47 +1,90 @@
 const body = document.body;
 const container = document.querySelector(".container");
 const headerQuestion = document.querySelector(".question");
+let currentQuestion = 0;
+const answersDiv = document.querySelector(".answers");
 
 fetch("https://opentdb.com/api.php?amount=10&category=18&type=multiple")
   .then((response) => response.json())
   .then((data) => {
     console.log(data);
 
-    let question = data.results[0].question;
+    // function to replace bad encoding with quotation marks.
+    let question = data.results[currentQuestion].question;
     let res = data.results;
 
-    // replace bad encoding with quotation marks.
-    for (let i = 0; i < question.length; i++) {
-      question = question.replace("&quot;", "'");
-      question = question.replace("&#039;", "'");
+    const setQuestion = function (currentQuestion) {
+      let question = data.results[currentQuestion].question;
+
+      for (let i = 0; i < question.length; i++) {
+        question = question.replace("&quot;", "'");
+        question = question.replace("&#039;", "'");
+      }
+
+      headerQuestion.innerText = question;
+    };
+
+    setQuestion(0);
+
+    // function to push the correct answer to incorrect answer array for easier manipulation.
+    function setAnswers(questionNumber) {
+      const randint = Math.floor(Math.random() * 3);
+      let answersArray = res[questionNumber].incorrect_answers;
+      answersArray.push(res[questionNumber].correct_answer);
+
+      //changing the current index with the index of randint so the index before is removed.
+      answersArray[3] = answersArray[randint];
+      answersArray[randint] = res[questionNumber].correct_answer;
+
+      return answersArray;
     }
 
-    headerQuestion.innerText = question;
-
-    //push the correct answer to incorrect answer array for easier manipulation.
-    let answersOne = res[0].incorrect_answers;
-    answersOne.push(res[0].correct_answer);
+    const answersOne = setAnswers(0);
 
     //loop over the answers and display them in the container
-    for (let i = 0; i < 4; i++) {
-      let answers = answersOne[i];
-      container.innerHTML += `<div class="button"> ${answers} </div>`;
+    function displayAnswers(array) {
+      answersDiv.innerHTML = ``;
+      for (let i = 0; i < 4; i++) {
+        let answers = array[i];
+        answersDiv.innerHTML += `<div class="button question-answer"> ${answers} </div>`;
+      }
     }
+
+    displayAnswers(answersOne);
 
     //check if button thats clicked is the correct answer.
-    const button = document.querySelectorAll(".button");
-    for (let i = 0; i < button.length; i++) {
-      button[i].addEventListener("click", () => {
-        let rightAnswer = res[0].correct_answer;
+    //add an event listener to the div containing all the buttons
+    //Use event.target to check whether the button clicked is the right answer
+    //if not, change the background colour of the button to red.
+    //If they choose the correct answer then change to the next set of questions and answers
+  
+    answersDiv.addEventListener("click", (e) => {
+      let rightAnswer = res[currentQuestion].correct_answer;
 
-        for (let j = 0; j < question.length; j++) {
-          rightAnswer = rightAnswer.replace("&quot;", "'");
-          rightAnswer = rightAnswer.replace("&#039;", "'");
-        }
+      for (let j = 0; j < question.length; j++) {
+        rightAnswer = rightAnswer.replace("&quot;", `"`);
+        rightAnswer = rightAnswer.replace("&#039;", "'");
+        rightAnswer = rightAnswer.replace("&lt;", "<");
+        rightAnswer = rightAnswer.replace("&gt;", ">");
+      }
 
-        button[i].innerText === rightAnswer
-          ? (button[i].style.backgroundColor = "green")
-          : (button[i].style.backgroundColor = "red");
-      });
-    }
+      rightAnswer = rightAnswer.trim();
+      console.log(`right answer ${rightAnswer}`);
+
+      console.log(e.target.innerText);
+
+      let choice = e.target.innerText;
+
+      if (choice === rightAnswer) {
+        e.target.style.backgroundColor = "green";
+        currentQuestion++;
+
+        setQuestion(currentQuestion);
+        const answersTwo = setAnswers(currentQuestion);
+
+        displayAnswers(answersTwo);
+      } else if (e.target.classList.contains("question-answer")) {
+        e.target.style.backgroundColor = "red";
+      }
+    });
   });
