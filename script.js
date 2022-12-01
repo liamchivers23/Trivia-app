@@ -15,8 +15,6 @@ const startQuiz = function () {
   fetch("https://opentdb.com/api.php?amount=10&category=18&type=multiple")
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-
       // function to replace bad encoding with quotation marks.
       let question = data.results[currentQuestion].question;
       let res = data.results;
@@ -71,14 +69,13 @@ const startQuiz = function () {
       answersDiv.addEventListener("click", (e) => {
         if (currentQuestion >= 9) {
           container.innerHTML = `
-          <h1> Congratulations You Win! </h1>
+          <h1> Thanks for trying out our quiz! </h1>
           <br/>
           <p>If you want to try the quiz again, click the restart quiz button!</p>
           <br/>
           `;
           restartButton.style.display = "block";
         }
-        console.log(currentQuestion);
         let rightAnswer = res[currentQuestion].correct_answer;
 
         for (let j = 0; j < question.length; j++) {
@@ -90,19 +87,22 @@ const startQuiz = function () {
         }
 
         rightAnswer = rightAnswer.trim();
-        console.log(`right answer ${rightAnswer}`);
-        console.log(e.target.innerText);
 
         let choice = e.target.innerText;
 
         if (choice === rightAnswer) {
-          e.target.style.backgroundColor = "green";
           currentQuestion++;
           setQuestion(currentQuestion);
           const answersTwo = setAnswers(currentQuestion);
           displayAnswers(answersTwo);
         } else if (e.target.classList.contains("question-answer")) {
           e.target.style.backgroundColor = "red";
+          setTimeout(() => {
+            currentQuestion++;
+            setQuestion(currentQuestion);
+            const answersTwo = setAnswers(currentQuestion);
+            displayAnswers(answersTwo);
+          }, 500);
         }
       });
     });
