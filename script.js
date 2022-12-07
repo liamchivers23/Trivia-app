@@ -92,9 +92,13 @@ const startQuiz = function () {
 
         if (choice === rightAnswer) {
           currentQuestion++;
-          setQuestion(currentQuestion);
-          const answersTwo = setAnswers(currentQuestion);
-          displayAnswers(answersTwo);
+          e.target.style.backgroundColor = 'lightgreen'
+          setTimeout(() => {
+            setQuestion(currentQuestion);
+            const answersTwo = setAnswers(currentQuestion);
+            displayAnswers(answersTwo);
+          }, 500);
+          
         } else if (e.target.classList.contains("question-answer")) {
           e.target.style.backgroundColor = "red";
           setTimeout(() => {
