@@ -5,23 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
     <title>Trivia Application</title>
   </head>
   <body>
     <main>
       <div class="intro modal">
-        <h1>Welcome to our computer science based quiz</h1>
+        <h1>Welcome to my computer science based quiz</h1>
         <p>Click the start quiz button to get started.</p>
         <button class="start-button">Start Quiz</button>
       </div>
       <section class="trivia-container">
+        <h2 class="correct-answers-counter"></h2>
         <div class="container">
-          <h1 class="question"></h1>
+          <h3 class="question"></h3>
           <div class="answers"></div>
         </div>
         <button class="restart-button">Restart quiz</button>
       </section>
     </main>
-    <script src="script.js"></script>
   </body>
 </html>

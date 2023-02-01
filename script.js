@@ -6,6 +6,8 @@ const answersDiv = document.querySelector(".answers");
 const startButton = document.querySelector(".start-button");
 const restartButton = document.querySelector(".restart-button");
 const intro = document.querySelector(".intro");
+let correctAnswersCounter = document.querySelector(".correct-answers-counter");
+let correctAnswer = 0;
 
 const startQuiz = function () {
   const container = document.querySelector(".container");
@@ -15,6 +17,7 @@ const startQuiz = function () {
   fetch("https://opentdb.com/api.php?amount=10&category=18&type=multiple")
     .then((response) => response.json())
     .then((data) => {
+      correctAnswersCounter.innerHTML = `<p>correct answer counter = ${correctAnswer}</p>`;
       // function to replace bad encoding with quotation marks.
       let question = data.results[currentQuestion].question;
       let res = data.results;
@@ -69,9 +72,10 @@ const startQuiz = function () {
       answersDiv.addEventListener("click", (e) => {
         if (currentQuestion >= 9) {
           container.innerHTML = `
-          <h1> Thanks for trying out our quiz! </h1>
+          <h1> Thanks for trying out the quiz! </h1>
           <br/>
           <p>If you want to try the quiz again, click the restart quiz button!</p>
+          <p>you had ${correctAnswer} out of 10 questions correct!
           <br/>
           `;
           restartButton.style.display = "block";
@@ -92,13 +96,14 @@ const startQuiz = function () {
 
         if (choice === rightAnswer) {
           currentQuestion++;
-          e.target.style.backgroundColor = 'lightgreen'
+          e.target.style.backgroundColor = "lightgreen";
+          correctAnswer++;
+          correctAnswersCounter.innerHTML = `<p>correct answer counter = ${correctAnswer}</p>`;
           setTimeout(() => {
             setQuestion(currentQuestion);
             const answersTwo = setAnswers(currentQuestion);
             displayAnswers(answersTwo);
           }, 500);
-          
         } else if (e.target.classList.contains("question-answer")) {
           e.target.style.backgroundColor = "red";
           setTimeout(() => {
@@ -125,4 +130,6 @@ restartButton.addEventListener("click", () => {
   `;
   restartButton.style.display = "none";
   startQuiz();
+  correctAnswer = 0;
+  correctAnswersCounter.innerHTML = `<p>correct answer counter = ${correctAnswer}</p>`;
 });

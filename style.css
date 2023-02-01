@@ -16,7 +16,7 @@ body {
   justify-content: center;
   text-align: center;
   align-self: center;
-  background-color: aquamarine;
+  background-color: grey;
   min-height: 100vh;
 }
 
@@ -39,6 +39,12 @@ body {
   cursor: pointer;
 }
 
+.correct-answers-counter {
+  text-transform: uppercase;
+  padding-bottom: 4rem;
+  font-weight: 500;
+}
+
 .modal {
   position: absolute;
   text-align: center;
@@ -54,16 +60,25 @@ body {
   padding-bottom: 1rem;
 }
 .start-button {
-  padding: 1rem;
+  padding: 1.5rem;
   border: 1px solid black;
   border-radius: 1rem;
   cursor: pointer;
 }
 
+.start-button:hover {
+  background-color: grey;
+}
+
 .restart-button {
-  padding: 1rem;
+  padding: 2rem;
   border: 1px solid black;
   border-radius: 1rem;
   cursor: pointer;
   display: none;
+  position: absolute;
+  text-align: center;
+  top: 66%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
